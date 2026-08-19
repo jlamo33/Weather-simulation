@@ -6,9 +6,15 @@
 //
 
 #include <iostream>
-
+#include "Simulation.h"
+#include "time.h"
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+    
+    /**
+        run simulation
+     */
+    Time t;
+    Simulation s(t);
+    s.update(6 * 3600, 0);
     return EXIT_SUCCESS;
 }

@@ -48,9 +48,10 @@ void Time::tick(double deltaTime, const double timeSpeed, int totalSecondsOfDay)
         
     }
     
-    
+    // update dawn and dusk 
+    updateDawn(30);
+    updateDusk(30);
     timeOfDay = fmod(timeOfDay, totalSecondsOfDay);
-    determineDayState();
     
 }
 
@@ -194,6 +195,15 @@ bool Time::isDusk() {
     
     return timeOfDay > sunSet && timeOfDay <= dusk;
 }
+
+/**
+ flagger method, checks if it is night
+ */
+bool Time::isNight() {
+    
+    return timeOfDay > dusk || timeOfDay < dawn;
+}
+
 
 
 /**

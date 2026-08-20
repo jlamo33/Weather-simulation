@@ -64,6 +64,7 @@ void Simulation::update(double timeOfDay, int currentDay) {
         auto currentTime = sim_clock::now();
         deltaTime = chrono::duration<double>(currentTime - lastTime).count();
         time.tick(deltaTime, factor, 86400);
+        time.determineDayState();
         
         lastTime = currentTime;
         

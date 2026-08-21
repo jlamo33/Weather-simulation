@@ -15,6 +15,6 @@ int main(int argc, const char * argv[]) {
      */
     Time t;
     Simulation s(t);
-    s.update(6 * 3600, 0);
+    s.update(16 * 3600, 0);
     return EXIT_SUCCESS;
 }

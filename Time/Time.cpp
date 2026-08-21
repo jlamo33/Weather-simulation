@@ -285,27 +285,27 @@ std::string Time::displayDayState() {
             
         case DayState::DAY:
             
-            return "Day 🌆";
+            return "Day☀️";
             
         case DayState::NIGHT:
             
-            return "Night 🌙";
+            return "Night 🌌";
             
         case DayState::DUSK:
             
-            return "Dusk 🌅";
+            return "Dusk🌙";
             
         case DayState::DAWN:
             
-            return "Dawn 🌅";
+            return "Dawn🌙";
             
         case DayState::SUNSET:
             
-            return "Sunset ";
+            return "Sunset 🌅 ";
             
         case DayState::SUNRISE:
             
-            return "Sunrise";
+            return "Sunrise 🌅";
             
             
         default:

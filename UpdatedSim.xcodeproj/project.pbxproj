@@ -38,6 +38,11 @@
 			path = Simulation;
 			sourceTree = "<group>";
 		};
+		0DD7AC3F303787B900547529 /* Weather */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Weather;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +59,7 @@
 		0DD7AB37300F0C6000547529 = {
 			isa = PBXGroup;
 			children = (
+				0DD7AC3F303787B900547529 /* Weather */,
 				0DD7AB4A300F0C7F00547529 /* Time */,
 				0DD7AB42300F0C6000547529 /* UpdatedSim */,
 				0DD7AB41300F0C6000547529 /* Products */,
@@ -88,6 +94,7 @@
 				0DD7AB42300F0C6000547529 /* UpdatedSim */,
 				0DD7AB4A300F0C7F00547529 /* Time */,
 				0DD7ABC13032190E00547529 /* Simulation */,
+				0DD7AC3F303787B900547529 /* Weather */,
 			);
 			name = UpdatedSim;
 			packageProductDependencies = (

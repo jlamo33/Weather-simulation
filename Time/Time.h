@@ -56,10 +56,18 @@ private:
     
 public:
     
+    // time constructor
     Time();
+    
+    
+    // getter methods for returning time of day and day counter
     double getTimeOfDay() const;
     double getDayCounter() const;
+    
+    
+    // resets the day to midnight (time of day = 0)
     void resetDay();
+    
     
     void setTimeOfDay(double newTime);
     void setDayCounter(int newCounter);
@@ -72,6 +80,8 @@ public:
     bool isNight();
     bool isDawn();
     bool isDusk();
+    
+    
     void tick(double deltaTime, const double timeSpeed, int secondsOfDay);
     void setDawn(double newDawn);
     void updateDawn(double dawnSpan);

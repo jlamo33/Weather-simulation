@@ -242,6 +242,17 @@ double Time::calcHoursFromMidNight() {
 DayState Time::determineDayState() {
     
     
+    if(timeOfDay == sunRise) {
+        
+        return dayState = DayState::SUNRISE;
+    }
+    
+    if(timeOfDay == sunSet) {
+        
+        return dayState = DayState::SUNSET;
+    }
+    
+    
     if(isDawn()) {
         
         return dayState = DayState::DAWN;
@@ -294,7 +305,7 @@ std::string Time::displayDayState() {
             
         case DayState::SUNRISE:
             
-            return "Sunrise ";
+            return "Sunrise";
             
             
         default:

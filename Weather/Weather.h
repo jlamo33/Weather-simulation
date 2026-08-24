@@ -7,6 +7,7 @@
 
 #include "Time.h"
 #include <random>
+#pragma once
 
 enum weatherState {
     
@@ -92,6 +93,7 @@ public:
             getter and setter for weather change interval.
      */
     int getWeatherChangeInterval();
+    int getLastChangeInterval();
     void setweatherChangeInterval(int newChangeInterval);
     
     

@@ -7,6 +7,7 @@
 
 #include "Weather.h"
 #include <random>
+#include "iostream"
 
 
 Weather::Weather(Time& t)
@@ -14,7 +15,9 @@ Weather::Weather(Time& t)
     :t(t),
     gen(rd())
 {
-    
+    weatherChangeInterval = 0;
+    std::uniform_int_distribution<int>dist(MIN_WEATHER_CHANGE, MAX_WEATHER_CHANGE);
+    lastChangeInterval = dist(gen);
 }
 
 int Weather::getWeatherChangeInterval() {
@@ -22,15 +25,34 @@ int Weather::getWeatherChangeInterval() {
     return weatherChangeInterval;
 }
 
+int Weather::getLastChangeInterval() {
+    
+    return lastChangeInterval;
+}
+
 void Weather::updateWeatherInterval(double deltaTime) {
+    
+    std::uniform_real_distribution<double>dist2(0.0,1.0);
+    std::uniform_int_distribution<int>dist(MIN_WEATHER_CHANGE, MAX_WEATHER_CHANGE);
     
     // add weather change interval to weather time
     weatherChangeInterval += deltaTime;
     
+    // if the random number is less than some threshold increase last change interval
+    if(dist2(gen) < 0.03) {
+        
+        lastChangeInterval = lastChangeInterval + dist(gen);
+        
+        // if last change interval exceeds 500, reset change interval to some random value
+        if(lastChangeInterval > 500) {
+            
+            lastChangeInterval = dist(gen);
+        }
+    }
+    
     // when we pass last change interval , trigger a weather change
     if(weatherChangeInterval > lastChangeInterval) {
         
-        std::uniform_int_distribution<int>dist(MIN_WEATHER_CHANGE, MAX_WEATHER_CHANGE);
         
         lastChangeInterval = dist(gen);
         weatherChangeInterval = 0;

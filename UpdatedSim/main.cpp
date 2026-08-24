@@ -8,13 +8,15 @@
 #include <iostream>
 #include "Simulation.h"
 #include "time.h"
+#include "Weather.h"
 int main(int argc, const char * argv[]) {
     
     /**
         run simulation
      */
     Time t;
-    Simulation s(t);
+    Weather w(t);
+    Simulation s(t, w);
     s.update(16 * 3600, 0);
     return EXIT_SUCCESS;
 }

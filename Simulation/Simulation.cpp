@@ -15,9 +15,10 @@ using namespace std;
  Constructor,
  init time connection
  */
-Simulation::Simulation(Time& time_ref)
+Simulation::Simulation(Time& time_ref, Weather& weather_ref)
     
-    : time(time_ref)
+    : time(time_ref),
+      weather(weather_ref)
     
     {
     }
@@ -65,6 +66,7 @@ void Simulation::update(double timeOfDay, int currentDay) {
         deltaTime = chrono::duration<double>(currentTime - lastTime).count();
         time.tick(deltaTime, factor, 86400);
         time.determineDayState();
+        weather.updateWeatherInterval(deltaTime);
         
         lastTime = currentTime;
         
@@ -81,9 +83,12 @@ void Simulation::update(double timeOfDay, int currentDay) {
 void Simulation::showSim() {
     
     cout << time.displayClock()
-         << " | "
-         << time.displayDayState()
-         << endl;
+    << " | ";
+    cout << "Weather Change Interval " << weather.getWeatherChangeInterval() <<
+    " and last change interval " << weather.getLastChangeInterval()
+    << " | "
+    << time.displayDayState()
+    << endl;
 }
 
 

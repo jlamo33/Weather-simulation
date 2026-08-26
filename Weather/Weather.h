@@ -75,6 +75,7 @@ private:
     int lastChangeInterval;
     std::random_device rd;
     std::mt19937 gen;
+    weatherState currentWeather;
      
     
     static const int MIN_WEATHER_CHANGE = 30; // half a minute
@@ -99,5 +100,7 @@ public:
     
     // updates weather interval.
     void updateWeatherInterval(double deltaTime);
+    void determineWeatherState();
+    std::string displayWeatherState();
 };
 

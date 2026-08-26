@@ -54,8 +54,72 @@ void Weather::updateWeatherInterval(double deltaTime) {
     if(weatherChangeInterval > lastChangeInterval) {
         
         
+        // reset weather change interval and pick new last change interval
         lastChangeInterval = dist(gen);
         weatherChangeInterval = 0;
         
+    }
+}
+
+void Weather::determineWeatherState() {
+    
+    
+    std::uniform_int_distribution<int>dist(MIN_WEATHER_CHANGE, MAX_WEATHER_CHANGE);
+    int roll = dist(gen);
+    
+    if(roll < 20) {
+        
+        currentWeather = weatherState::RAIN;
+    }
+    
+    else if(roll < 25) {
+        
+        currentWeather = weatherState::THUNDERSTORM;
+    }
+    
+    else if(roll < 60) {
+        
+        currentWeather = weatherState::CLEAR;
+    }
+    
+    else if(roll < 90) {
+        
+        currentWeather = weatherState::PARTLY_CLOUDY;
+    }
+    
+    else {
+        
+        currentWeather = weatherState::SNOW;
+    }
+}
+
+string Weather::displayWeatherState() {
+    
+    switch(currentWeather) {
+            
+        case RAIN:
+            
+            return "🌧️";
+            
+        case CLEAR:
+            
+            return "☀️";
+            
+        case PARTLY_CLOUDY:
+            
+            return "🌤️";
+            
+        case THUNDERSTORM:
+            
+            return "⛈️";
+            
+        case SNOW:
+            
+            return "❄️";
+            
+        case CLOUDY:
+            
+            return "☁️";
+            
     }
 }

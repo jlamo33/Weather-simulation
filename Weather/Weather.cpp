@@ -58,6 +58,8 @@ void Weather::updateWeatherInterval(double deltaTime) {
         lastChangeInterval = dist(gen);
         weatherChangeInterval = 0;
         
+        determineWeatherState();
+        
     }
 }
 
@@ -120,6 +122,10 @@ string Weather::displayWeatherState() {
         case CLOUDY:
             
             return "☁️";
+            
+        default:
+            
+            return " ";
             
     }
 }

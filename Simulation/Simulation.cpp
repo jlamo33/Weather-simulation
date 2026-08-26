@@ -67,7 +67,6 @@ void Simulation::update(double timeOfDay, int currentDay) {
         time.tick(deltaTime, factor, 86400);
         time.determineDayState();
         weather.updateWeatherInterval(deltaTime);
-        weather.determineWeatherState();
         
         lastTime = currentTime;
         

@@ -20,11 +20,6 @@ enum weatherState {
     
 };
 
-
-struct Rain {
-    
-};
-
 struct Snow {
     
     
@@ -78,8 +73,11 @@ private:
     weatherState currentWeather;
      
     
-    static const int MIN_WEATHER_CHANGE = 30; // half a minute
-    static const int MAX_WEATHER_CHANGE = 120; // 2 minutes
+    static constexpr int MIN_WEATHER_CHANGE = 30; // half a minute
+    static constexpr int MAX_WEATHER_CHANGE = 120; // 2 minutes
+    std::uniform_int_distribution<int>dist;
+    std::uniform_real_distribution<double>dist2;
+    
     
     
 public:
@@ -102,5 +100,30 @@ public:
     void updateWeatherInterval(double deltaTime);
     void determineWeatherState();
     std::string displayWeatherState();
+};
+
+
+struct Rain {
+    
+    double rainFactor = 0;
+    
+    
+    double calculateRainFactor(weatherState currentWeather) {
+        
+        if(rainFactor > 3.0) {
+            
+            rainFactor -= 0.05;
+        }
+        
+        if(currentWeather == CLOUDY) {
+            
+            rainFactor += 0.03;
+        }
+        
+        
+        return rainFactor;
+    }
+    
+    
 };
 

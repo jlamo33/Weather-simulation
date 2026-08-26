@@ -17,6 +17,7 @@ Weather::Weather(Time& t)
 {
     weatherChangeInterval = 0;
     std::uniform_int_distribution<int>dist(MIN_WEATHER_CHANGE, MAX_WEATHER_CHANGE);
+    std::uniform_real_distribution<double>dist2(0.0,1.0);
     lastChangeInterval = dist(gen);
 }
 
@@ -31,9 +32,6 @@ int Weather::getLastChangeInterval() {
 }
 
 void Weather::updateWeatherInterval(double deltaTime) {
-    
-    std::uniform_real_distribution<double>dist2(0.0,1.0);
-    std::uniform_int_distribution<int>dist(MIN_WEATHER_CHANGE, MAX_WEATHER_CHANGE);
     
     // add weather change interval to weather time
     weatherChangeInterval += deltaTime;
@@ -57,7 +55,6 @@ void Weather::updateWeatherInterval(double deltaTime) {
         // reset weather change interval and pick new last change interval
         lastChangeInterval = dist(gen);
         weatherChangeInterval = 0;
-        
         determineWeatherState();
         
     }
@@ -68,6 +65,7 @@ void Weather::determineWeatherState() {
     
     std::uniform_int_distribution<int>dist(MIN_WEATHER_CHANGE, MAX_WEATHER_CHANGE);
     int roll = dist(gen);
+    int rainProbability;
     
     if(roll < 20) {
         
@@ -125,7 +123,7 @@ string Weather::displayWeatherState() {
             
         default:
             
-            return " ";
+            return "Unknown State";
             
     }
 }

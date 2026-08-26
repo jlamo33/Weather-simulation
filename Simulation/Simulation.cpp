@@ -43,6 +43,7 @@ void Simulation::initliaze(double timeOfDay, int currentDay, int sunrise, int su
     time.setDayCounter(currentDay);
     time.setSunRise(sunrise);
     time.setSunSet(sunset);
+    weather.determineWeatherState();
 }
 
 
@@ -84,11 +85,11 @@ void Simulation::showSim() {
     
     cout << time.displayClock()
     << " | ";
+    cout << "Day State " << time.displayDayState();
     cout << "Weather Change Interval " << weather.getWeatherChangeInterval() <<
     " and last change interval " << weather.getLastChangeInterval()
     << " | ";
     cout << "Weather State" << weather.displayWeatherState()
-    << time.displayDayState()
     << endl;
 }
 

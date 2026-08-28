@@ -7,6 +7,8 @@
 
 #include "Time.h"
 #include <random>
+#include "iostream"
+using namespace std;
 #pragma once
 
 enum weatherState {
@@ -17,6 +19,37 @@ enum weatherState {
     CLOUDY,
     PARTLY_CLOUDY,
     SNOW
+    
+};
+
+struct Rain {
+    
+    double rainFactor = 0;
+    double rainDepth;
+    
+    
+    double calculateRainFactor(weatherState currentWeather) {
+        
+        if(rainFactor > 3.0) {
+            
+            rainFactor -= 0.05;
+        }
+        
+        if(currentWeather == CLOUDY) {
+            
+            rainFactor += 0.03;
+        }
+        
+        
+        return rainFactor;
+    }
+    
+    string debugRainFactor() {
+        
+        
+        return "Rain Factor " + to_string(rainFactor);
+    }
+    
     
 };
 
@@ -71,7 +104,6 @@ private:
     std::random_device rd;
     std::mt19937 gen;
     weatherState currentWeather;
-     
     
     static constexpr int MIN_WEATHER_CHANGE = 30; // half a minute
     static constexpr int MAX_WEATHER_CHANGE = 120; // 2 minutes
@@ -86,6 +118,8 @@ public:
     Weather(Time& t);
     
     Time& t;
+    Rain rain;
+     
     
     
     /**
@@ -102,28 +136,4 @@ public:
     std::string displayWeatherState();
 };
 
-
-struct Rain {
-    
-    double rainFactor = 0;
-    
-    
-    double calculateRainFactor(weatherState currentWeather) {
-        
-        if(rainFactor > 3.0) {
-            
-            rainFactor -= 0.05;
-        }
-        
-        if(currentWeather == CLOUDY) {
-            
-            rainFactor += 0.03;
-        }
-        
-        
-        return rainFactor;
-    }
-    
-    
-};
 

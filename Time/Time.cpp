@@ -34,12 +34,12 @@ Time::Time()
  Tick method that updates time of day based on deltatime.
  wraps time of day with total seconds in day and updates day counter
  */
-void Time::tick(double deltaTime, const double timeSpeed, int totalSecondsOfDay) {
+void Time::tick(double deltaTime, const int timeSpeed, int totalSecondsOfDay) {
     
     
     setTotalSecondsOfDay(totalSecondsOfDay);
     
-    timeOfDay +=  timeSpeed * deltaTime;
+    timeOfDay += timeSpeed * deltaTime;
     
     
     if(timeOfDay >= totalSecondsOfDay) {
@@ -335,8 +335,8 @@ std::string Time::displayClock() {
         // Format as HH:MM:SS AM/PM
         std::ostringstream oss;
         oss << std::setw(2) << std::setfill('0') << hour12 << ":"
-        << std::setw(2) << std::setfill('0') << minutes << ":"
-        << std::setw(2) << std::setfill('0') << seconds << " "
+        << std::setw(2)  << minutes << ":"
+        << std::setw(2)  << seconds << " "
         << period;
         
         return oss.str();

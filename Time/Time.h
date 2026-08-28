@@ -82,7 +82,7 @@ public:
     bool isDusk();
     
     
-    void tick(double deltaTime, const double timeSpeed, int secondsOfDay);
+    void tick(double deltaTime, const int timeSpeed, int secondsOfDay);
     void setDawn(double newDawn);
     void updateDawn(double dawnSpan);
     void updateDusk(double duskSpan);

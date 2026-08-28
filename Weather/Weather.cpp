@@ -16,8 +16,8 @@ Weather::Weather(Time& t)
     gen(rd())
 {
     weatherChangeInterval = 0;
-    std::uniform_int_distribution<int>dist(MIN_WEATHER_CHANGE, MAX_WEATHER_CHANGE);
-    std::uniform_real_distribution<double>dist2(0.0,1.0);
+    dist = std::uniform_int_distribution<int>(MIN_WEATHER_CHANGE, MAX_WEATHER_CHANGE);
+    dist2 = std::uniform_real_distribution<double>(0.0, 1.0);
     lastChangeInterval = dist(gen);
 }
 
@@ -39,7 +39,11 @@ void Weather::updateWeatherInterval(double deltaTime) {
     // if the random number is less than some threshold increase last change interval
     if(dist2(gen) < 0.03) {
         
-        lastChangeInterval = lastChangeInterval + dist(gen);
+        cout << dist2(gen);
+        
+        lastChangeInterval =  lastChangeInterval + dist(gen);
+        
+        cout << "\n\n dist " << dist(gen);
         
         // if last change interval exceeds 500, reset change interval to some random value
         if(lastChangeInterval > 500) {
@@ -63,11 +67,11 @@ void Weather::updateWeatherInterval(double deltaTime) {
 void Weather::determineWeatherState() {
     
     
-    std::uniform_int_distribution<int>dist(MIN_WEATHER_CHANGE, MAX_WEATHER_CHANGE);
+    std::uniform_int_distribution<int>dist(0, MAX_WEATHER_CHANGE);
     int roll = dist(gen);
-    int rainProbability;
+    double factor = rain.calculateRainFactor(currentWeather);
     
-    if(roll < 20) {
+    if(roll < 20 && factor > 0.08) {
         
         currentWeather = weatherState::RAIN;
     }

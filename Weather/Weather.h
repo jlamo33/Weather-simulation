@@ -22,26 +22,91 @@ enum weatherState {
     
 };
 
+enum rainStates {
+    
+    LIGHT_RAIN,
+    HEAVY_RAIN,
+    MODERATE_RAIN,
+    DRIZZLE,
+    DOWN_POUR
+};
+
 struct Rain {
     
+
+    // variable rain factor will increase or decrerase the likelhood of rain
     double rainFactor = 0;
-    double rainDepth;
+    
+    // will measure rain depth amount in amount(units)
+    double rainDepth = 0;
+    
+    // size of rain droplet
+    double rainSphereRadius = 0;
+    
+    // how fast it is raining in amount(units) / per second
+    double rainFallSpeed = 0;
+    
+    int rainIntensityParamters[5] = {5, 30, 20, 1, 40};
     
     
-    double calculateRainFactor(weatherState currentWeather) {
+    
+    
+    // calculates rainfactor based on state of weather
+    double calculateRainFactor(double deltaTime, weatherState stateOfWeather) {
         
         if(rainFactor > 3.0) {
             
-            rainFactor -= 0.05;
+            rainFactor -= 0.4 * deltaTime;
         }
         
-        if(currentWeather == CLOUDY) {
-            
-            rainFactor += 0.03;
+        switch(stateOfWeather) {
+                
+            case PARTLY_CLOUDY:
+                
+                rainFactor += 0.001 * deltaTime;
+                break;
+                
+            case CLOUDY:
+                
+                rainFactor += 0.01 * deltaTime;
+                break;
+                
+            case RAIN:
+                
+                rainFactor += 0.001 * deltaTime;
+                break;
+                
+            case THUNDERSTORM:
+                
+                rainFactor += 1.2 * deltaTime;
+                break;
+                
+            case SNOW:
+                
+                break;
+                
+            case CLEAR:
+                
+                break;
+                
+            default:
+                
+                rainFactor = 0;
+                break;
         }
         
         
         return rainFactor;
+    }
+    
+    double calculateRainSphereRadius(double deltaTime) {
+        
+        return -1;
+    }
+    
+    void updateRainFactor(double deltaTime, weatherState currentWeather) {
+        
+        calculateRainFactor(deltaTime, currentWeather);
     }
     
     string debugRainFactor() {
@@ -52,6 +117,7 @@ struct Rain {
     
     
 };
+
 
 struct Snow {
     
@@ -127,7 +193,11 @@ public:
      */
     int getWeatherChangeInterval();
     int getLastChangeInterval();
+    weatherState getCurrentWeather();
     void setweatherChangeInterval(int newChangeInterval);
+    void setWeatherState(weatherState newState);
+    
+    bool isRaining();
     
     
     // updates weather interval.

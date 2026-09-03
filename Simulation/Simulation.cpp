@@ -66,12 +66,15 @@ void Simulation::update(double timeOfDay, int currentDay) {
         auto currentTime = sim_clock::now();
         deltaTime = chrono::duration<double>(currentTime - lastTime).count();
         
+        cout << "DELTA_TIME" << to_string(deltaTime);
+        cout << "\t\t";
         time.tick(deltaTime, factor,  86400);
         time.determineDayState();
-        weather.updateWeatherInterval(deltaTime);
+        weather.setWeatherState(CLOUDY);
+        weather.rain.updateRainFactor(deltaTime, weather.getCurrentWeather());
+       // weather.updateWeatherInterval(deltaTime);
         
         lastTime = currentTime;
-        
         showSim();
         
         this_thread::sleep_for(chrono::milliseconds(1000));

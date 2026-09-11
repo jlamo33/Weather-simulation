@@ -8,6 +8,7 @@
 #include "Time.h"
 #include <random>
 #include "iostream"
+#include "math.h"
 using namespace std;
 #pragma once
 
@@ -33,6 +34,12 @@ enum rainStates {
 
 struct Rain {
     
+    
+    // initalize the rain structs random distrubtion,
+    std::uniform_int_distribution<int>dist_rain_struct;
+    std::random_device rd;
+    std::mt19937 gen;
+    
 
     // variable rain factor will increase or decrerase the likelhood of rain
     double rainFactor = 0;
@@ -46,39 +53,72 @@ struct Rain {
     // how fast it is raining in amount(units) / per second
     double rainFallSpeed = 0;
     
-    int rainIntensityParamters[5] = {5, 30, 20, 1, 40};
-    
-    
-    
+    Rain():gen(rd()), dist_rain_struct(0, 100)
+    {
+    }
     
     // calculates rainfactor based on state of weather
     double calculateRainFactor(double deltaTime, weatherState stateOfWeather) {
         
-        if(rainFactor > 3.0) {
+        // rain factor is the percentange that increases the likelyhood of simulating rain
+        
+        // if the rain factor goes above 100 %
+        if(rainFactor > 100.0) {
             
             rainFactor -= 0.4 * deltaTime;
         }
         
         switch(stateOfWeather) {
                 
-            case PARTLY_CLOUDY:
+            case PARTLY_CLOUDY: {
                 
+                int roll = dist_rain_struct(gen);
+                
+                if(roll < 10) {
+                    
+                    rainFactor = max(rainFactor - 0.008 * deltaTime, 0.0);
+                }
                 rainFactor += 0.001 * deltaTime;
                 break;
                 
-            case CLOUDY:
+            }
+                
+            case CLOUDY: {
+                
+                int roll = dist_rain_struct(gen);
+                
+                // % 10 chance of no rain factor increase when it's cloudy.
+                if(roll < 10) {
+                    
+                    rainFactor = max(rainFactor - 0.5 * deltaTime, 0.0);
+                }
                 
                 rainFactor += 0.01 * deltaTime;
                 break;
                 
-            case RAIN:
+            }
                 
-                rainFactor += 0.001 * deltaTime;
+            case RAIN: {
+                
+                int roll = dist_rain_struct(gen);
+                
+                if(roll < 50) {
+                    
+                    rainFactor = min(rainFactor + 0.9 * deltaTime, 100.0);
+                }
+                
+                else if(roll < 100) {
+                    
+                    rainFactor = max(rainFactor - 0.7 * deltaTime, 0.0);
+                }
+                rainFactor += 1.1 * deltaTime;
                 break;
+                
+            }
                 
             case THUNDERSTORM:
                 
-                rainFactor += 1.2 * deltaTime;
+                rainFactor += 88.1 * deltaTime;
                 break;
                 
             case SNOW:
@@ -170,6 +210,7 @@ private:
     std::random_device rd;
     std::mt19937 gen;
     weatherState currentWeather;
+    weatherState previousWeather;
     
     static constexpr int MIN_WEATHER_CHANGE = 30; // half a minute
     static constexpr int MAX_WEATHER_CHANGE = 120; // 2 minutes

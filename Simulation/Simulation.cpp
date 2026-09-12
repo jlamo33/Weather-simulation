@@ -70,10 +70,9 @@ void Simulation::update(double timeOfDay, int currentDay) {
         cout << "\t\t";
         time.tick(deltaTime, factor,  86400);
         time.determineDayState();
-        weather.setWeatherState(CLOUDY);
+        //weather.setWeatherState(THUNDERSTORM);
+        weather.updateWeatherInterval(deltaTime);
         weather.rain.updateRainFactor(deltaTime, weather.getCurrentWeather());
-       // weather.updateWeatherInterval(deltaTime);
-        
         lastTime = currentTime;
         showSim();
         
@@ -93,7 +92,7 @@ void Simulation::showSim() {
     cout << "Weather Change Interval " << weather.getWeatherChangeInterval() <<
     " and last change interval " << weather.getLastChangeInterval()
     << " | ";
-    cout << "Weather State" << weather.displayWeatherState()
+    cout << "Weather State " << weather.displayWeatherState()
     << " | ";
     cout << weather.rain.debugRainFactor()
     << endl;

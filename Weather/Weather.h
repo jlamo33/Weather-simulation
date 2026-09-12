@@ -40,9 +40,17 @@ struct Rain {
     std::random_device rd;
     std::mt19937 gen;
     
+    Time& t;
+    
 
     // variable rain factor will increase or decrerase the likelhood of rain
     double rainFactor = 0;
+    
+    // likelhood of light rain
+    double lightRainChance = 0;
+    
+    // likehood of heavy rain
+    double heavyRainChance = 0;
     
     // will measure rain depth amount in amount(units)
     double rainDepth = 0;
@@ -52,6 +60,7 @@ struct Rain {
     
     // how fast it is raining in amount(units) / per second
     double rainFallSpeed = 0;
+    
     
     Rain():gen(rd()), dist_rain_struct(0, 100)
     {
@@ -116,12 +125,24 @@ struct Rain {
                 
             }
                 
-            case THUNDERSTORM:
+            case THUNDERSTORM: {
                 
-                rainFactor += 88.1 * deltaTime;
+                int roll = dist_rain_struct(gen);
+                
+                // 60 % chance that rain factor will decrease after thunderstorm
+                if(roll < 60) {
+                    
+                    rainFactor = max(rainFactor - 20 * deltaTime, 0.0);
+                }
+                
+                rainFactor += 10.1 * deltaTime;
                 break;
                 
+            }
+                
             case SNOW:
+                
+                rainFactor += 0.0001 * deltaTime;
                 
                 break;
                 
@@ -139,7 +160,46 @@ struct Rain {
         return rainFactor;
     }
     
+    
+    double calculateLightRainFactor(double deltaTime, weatherState stateOfWeather) {
+        
+        switch(stateOfWeather) {
+                
+                
+            case RAIN: {
+                
+                if(t.isDawn()) {
+                    lightRainChance += 1.2 * deltaTime;
+                }
+                
+                else if(t.isDusk()) {
+                    
+                    lightRainChance += 0.9 * deltaTime;
+                }
+                
+                lightRainChance += 0.1 * deltaTime;
+                
+            }
+                
+            case THUNDERSTORM: {
+                
+                lightRainChance += 0.1 * deltaTime;
+            }
+                
+            default:
+                
+                lightRainChance = 0;
+        }
+        
+        return lightRainChance;
+    }
+    
     double calculateRainSphereRadius(double deltaTime) {
+        
+        return -1;
+    }
+    
+    double calculateRainFallSpeed(double deltaTime) {
         
         return -1;
     }

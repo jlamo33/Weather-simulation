@@ -36,7 +36,7 @@ Time::Time()
  */
 void Time::tick(double deltaTime, const int timeSpeed, int totalSecondsOfDay) {
     
-    
+    // set total seconds of day to passed value by default 86,400 seconds is standard 24 hour day
     setTotalSecondsOfDay(totalSecondsOfDay);
     
     timeOfDay += timeSpeed * deltaTime;
@@ -51,6 +51,8 @@ void Time::tick(double deltaTime, const int timeSpeed, int totalSecondsOfDay) {
     // update dawn and dusk 
     updateDawn(30);
     updateDusk(30);
+    
+    
     timeOfDay = fmod(timeOfDay, totalSecondsOfDay);
     
 }

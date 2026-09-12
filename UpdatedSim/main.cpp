@@ -17,6 +17,6 @@ int main(int argc, const char * argv[]) {
     Time t;
     Weather w(t);
     Simulation s(t, w);
-    s.update(16 * 3600, 0);
+    s.update(19 * 3600, 0);
     return EXIT_SUCCESS;
 }

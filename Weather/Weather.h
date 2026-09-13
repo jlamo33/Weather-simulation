@@ -40,9 +40,10 @@ struct Rain {
     std::random_device rd;
     std::mt19937 gen;
     
+    // init the time object reference
     Time& t;
     
-
+    
     // variable rain factor will increase or decrerase the likelhood of rain
     double rainFactor = 0;
     
@@ -62,7 +63,7 @@ struct Rain {
     double rainFallSpeed = 0;
     
     
-    Rain():gen(rd()), dist_rain_struct(0, 100)
+    Rain(Time& t):gen(rd()), dist_rain_struct(0, 100), t(t)
     {
     }
     
@@ -160,6 +161,58 @@ struct Rain {
         return rainFactor;
     }
     
+    double calculateHeavyRainFactor(double deltaTime, weatherState stateOfWeather) {
+        
+        switch(stateOfWeather) {
+                
+            case RAIN: {
+                
+                int roll = dist_rain_struct(gen);
+                
+                // 40 % chance rain wont lead to heavy rain
+                if(roll < 40) {
+                    heavyRainChance = max(heavyRainChance - 0.6 * deltaTime, 0.0);
+                }
+                
+                // 60% chance rain wont lead to heavy rain
+                else if(roll < 100) {
+                    heavyRainChance = 0;
+                }
+                
+                // slight increase for heavy rain at night if raining
+                if(t.isNight()) {
+                    heavyRainChance += 1.1 * deltaTime;
+                }
+                
+                // slight increase for heavy rain if it is raining
+                heavyRainChance += 0.5 * deltaTime;
+            }
+                
+            case THUNDERSTORM: {
+                
+                int roll = dist_rain_struct(gen);
+                
+                // 70% chance thunder storm will increase to heavy rain
+                if(roll < 70) {
+                    heavyRainChance += 80 * deltaTime;
+                }
+                
+                // 30% chance thunder storm will fade out
+                else if(roll < 100) {
+                    heavyRainChance = max(heavyRainChance - 60 * deltaTime, 0.0);
+                }
+                
+                heavyRainChance += 10.1 * deltaTime;
+            }
+                
+            default:
+                
+                heavyRainChance = 0;
+        }
+        
+        return heavyRainChance;
+    }
+    
     
     double calculateLightRainFactor(double deltaTime, weatherState stateOfWeather) {
         
@@ -177,7 +230,10 @@ struct Rain {
                     lightRainChance += 0.9 * deltaTime;
                 }
                 
-                lightRainChance += 0.1 * deltaTime;
+                else {
+                    
+                    lightRainChance += 0.1 * deltaTime;
+                }
                 
             }
                 
@@ -201,12 +257,22 @@ struct Rain {
     
     double calculateRainFallSpeed(double deltaTime) {
         
-        return -1;
+        return (rainDepth / 3600) * deltaTime;
     }
     
     void updateRainFactor(double deltaTime, weatherState currentWeather) {
         
         calculateRainFactor(deltaTime, currentWeather);
+    }
+    
+    void updateLightRainFactor(double deltaTime, weatherState currentWeather) {
+        
+        calculateLightRainFactor(deltaTime, currentWeather);
+    }
+    
+    void updateHeavyRainFactor(double deltaTime, weatherState currentWeather) {
+        
+        calculateHeavyRainFactor(deltaTime, currentWeather);
     }
     
     string debugRainFactor() {
@@ -297,9 +363,14 @@ public:
     weatherState getCurrentWeather();
     void setweatherChangeInterval(int newChangeInterval);
     void setWeatherState(weatherState newState);
+    weatherState updatePreviousWeather(weatherState weather);
     
     bool isRaining();
+    bool isThunderStorming();
     
+    bool wasRaining();
+    
+    bool hasRainCondintions();
     
     // updates weather interval.
     void updateWeatherInterval(double deltaTime);

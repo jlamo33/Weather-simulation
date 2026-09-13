@@ -46,6 +46,16 @@ bool Weather::isRaining() {
     return currentWeather == RAIN;
 }
 
+bool Weather::wasRaining() {
+    
+    return previousWeather == RAIN;
+}
+
+bool Weather::hasRainCondintions() {
+    
+    return previousWeather != CLEAR || previousWeather != PARTLY_CLOUDY;
+}
+
 void Weather::updateWeatherInterval(double deltaTime) {
     
     // add weather change interval to weather time
@@ -75,13 +85,25 @@ void Weather::updateWeatherInterval(double deltaTime) {
     }
 }
 
+weatherState Weather::updatePreviousWeather(weatherState weather) {
+    
+    // get the currentWeather State
+    weather = getCurrentWeather();
+    
+    // save it to previousWeather
+    previousWeather = weather;
+    
+    // return that value in memory
+    return previousWeather;
+}
+
 void Weather::determineWeatherState() {
     
     
     std::uniform_int_distribution<int>dist(0, MAX_WEATHER_CHANGE);
     int roll = dist(gen);
     
-    if(roll < 20) {
+    if(roll < 20 && roll > 10 * rain.rainFactor && hasRainCondintions()) {
         
         currentWeather = weatherState::RAIN;
     }

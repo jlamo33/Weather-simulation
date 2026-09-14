@@ -66,13 +66,14 @@ void Simulation::update(double timeOfDay, int currentDay) {
         auto currentTime = sim_clock::now();
         deltaTime = chrono::duration<double>(currentTime - lastTime).count();
         
-        cout << "DELTA_TIME" << to_string(deltaTime);
-        cout << "\t\t";
         time.tick(deltaTime, factor,  86400);
         time.determineDayState();
-        //weather.setWeatherState(THUNDERSTORM);
-        weather.updateWeatherInterval(deltaTime);
-        weather.rain.updateRainFactor(deltaTime, weather.getCurrentWeather());
+        weather.setWeatherState(RAIN);
+        //weather.updateWeatherInterval(deltaTime);
+      //  weather.rain.updateRainFactor(deltaTime, weather.getCurrentWeather());
+        weather.rain.updateHeavyRainFactor(deltaTime, weather.getCurrentWeather());
+        weather.rain.updateLightRainFactor(deltaTime, weather.getCurrentWeather());
+        weather.rain.determineRainState(deltaTime);
         lastTime = currentTime;
         showSim();
         
@@ -89,12 +90,12 @@ void Simulation::showSim() {
     cout << time.displayClock()
     << " | ";
     cout << "Day State " << time.displayDayState();
-    cout << "Weather Change Interval " << weather.getWeatherChangeInterval() <<
-    " and last change interval " << weather.getLastChangeInterval()
-    << " | ";
+    cout << " | ";
     cout << "Weather State " << weather.displayWeatherState()
     << " | ";
-    cout << weather.rain.debugRainFactor()
+    cout << weather.rain.debugHeavyRainFactor();
+    cout << " | ";
+    cout << weather.rain.debugLightRainFactor()
     << endl;
 }
 

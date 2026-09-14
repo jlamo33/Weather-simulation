@@ -10,9 +10,10 @@
 #include "iostream"
 
 
-Weather::Weather(Time& t)
+Weather::Weather(Time& t, Rain& r)
      
     :t(t),
+    rain(r),
     gen(rd())
 {
     weatherChangeInterval = 0;
@@ -81,7 +82,6 @@ void Weather::updateWeatherInterval(double deltaTime) {
         lastChangeInterval = dist(gen);
         weatherChangeInterval = 0;
         determineWeatherState();
-        
     }
 }
 
@@ -103,7 +103,7 @@ void Weather::determineWeatherState() {
     std::uniform_int_distribution<int>dist(0, MAX_WEATHER_CHANGE);
     int roll = dist(gen);
     
-    if(roll < 20 && roll > 10 * rain.rainFactor && hasRainCondintions()) {
+    if(roll < 20 && roll < 10 * rain.rainFactor && hasRainCondintions()) {
         
         currentWeather = weatherState::RAIN;
     }
@@ -147,7 +147,7 @@ string Weather::displayWeatherState() {
             
         case THUNDERSTORM:
             
-            return "⛈️";
+            return " THUNDERSTORM ⛈️";
             
         case SNOW:
             

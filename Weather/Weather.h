@@ -62,8 +62,15 @@ struct Rain {
     // how fast it is raining in amount(units) / per second
     double rainFallSpeed = 0;
     
+    rainStates rainIntensityState;
     
-    Rain(Time& t):gen(rd()), dist_rain_struct(0, 100), t(t)
+    
+    
+    
+    Rain(Time& t)
+    :dist_rain_struct(0, 100),
+    gen(rd()),
+    t(t)
     {
     }
     
@@ -163,6 +170,7 @@ struct Rain {
     
     double calculateHeavyRainFactor(double deltaTime, weatherState stateOfWeather) {
         
+        
         switch(stateOfWeather) {
                 
             case RAIN: {
@@ -176,7 +184,7 @@ struct Rain {
                 
                 // 60% chance rain wont lead to heavy rain
                 else if(roll < 100) {
-                    heavyRainChance = 0;
+                    heavyRainChance += 0.001 * deltaTime;
                 }
                 
                 // slight increase for heavy rain at night if raining
@@ -184,8 +192,12 @@ struct Rain {
                     heavyRainChance += 1.1 * deltaTime;
                 }
                 
-                // slight increase for heavy rain if it is raining
-                heavyRainChance += 0.5 * deltaTime;
+                else {
+                    
+                    // slight increase for heavy rain if it is raining
+                    heavyRainChance += 0.5 * deltaTime;
+                    
+                }
             }
                 
             case THUNDERSTORM: {
@@ -194,27 +206,27 @@ struct Rain {
                 
                 // 70% chance thunder storm will increase to heavy rain
                 if(roll < 70) {
-                    heavyRainChance += 80 * deltaTime;
+                    heavyRainChance += 8 * deltaTime;
                 }
                 
                 // 30% chance thunder storm will fade out
                 else if(roll < 100) {
-                    heavyRainChance = max(heavyRainChance - 60 * deltaTime, 0.0);
+                    heavyRainChance = max(heavyRainChance - 10.5 * deltaTime, 0.0);
                 }
                 
-                heavyRainChance += 10.1 * deltaTime;
+                heavyRainChance += 1.21 * deltaTime;
             }
-                
-            default:
-                
-                heavyRainChance = 0;
         }
+        
+        heavyRainChance = clamp(heavyRainChance, 0.0, 100.0);
         
         return heavyRainChance;
     }
     
     
     double calculateLightRainFactor(double deltaTime, weatherState stateOfWeather) {
+        
+        double lightRainChanceTimer = 0.0;
         
         switch(stateOfWeather) {
                 
@@ -239,25 +251,38 @@ struct Rain {
                 
             case THUNDERSTORM: {
                 
-                lightRainChance += 0.1 * deltaTime;
+                lightRainChance += 0.2 * deltaTime;
             }
-                
-            default:
-                
-                lightRainChance = 0;
         }
         
         return lightRainChance;
     }
     
-    double calculateRainSphereRadius(double deltaTime) {
+    void determineRainState(double deltaTime) {
         
-        return -1;
+        if(lightRainChance == heavyRainChance) {
+            
+            rainIntensityState = MODERATE_RAIN;
+        }
+        
+        // must have atleast 20% chance for heavy rain
+        if(hasHeavyRainChance(heavyRainChance,  20, deltaTime)) {
+            
+            rainIntensityState = HEAVY_RAIN;
+        }
+        
+        
+        // must have atleast 20% chance light rain
+        else if(hasHeavyRainChance(lightRainChance, 20, deltaTime)) {
+            
+            rainIntensityState = LIGHT_RAIN;
+        }
+        
     }
     
-    double calculateRainFallSpeed(double deltaTime) {
+    bool hasHeavyRainChance(double rainStateChance, double thresHold, double deltaTime) {
         
-        return (rainDepth / 3600) * deltaTime;
+        return  rainStateChance >= (thresHold * deltaTime);
     }
     
     void updateRainFactor(double deltaTime, weatherState currentWeather) {
@@ -277,8 +302,35 @@ struct Rain {
     
     string debugRainFactor() {
         
-        
         return "Rain Factor " + to_string(rainFactor);
+    }
+    
+    string debugHeavyRainFactor() {
+        
+        return "HEAVY_RAIN_CHANCE " + to_string(heavyRainChance);
+    }
+    
+    string debugLightRainFactor() {
+        
+        return "LIGHT_RAIN_CHANCE " + to_string(lightRainChance);
+    }
+    
+    string getRainState() {
+        
+        switch(rainIntensityState) {
+                
+            case HEAVY_RAIN:
+                
+                return "HEAVY RAIN";
+                
+            case LIGHT_RAIN:
+                return "LIGHT_RAIN";
+                
+            case MODERATE_RAIN:
+                return "MODERATE_RAIN";
+        }
+        
+        return "EMPTY";
     }
     
     
@@ -348,10 +400,10 @@ private:
 public:
     
     // constructor for weather class
-    Weather(Time& t);
+    Weather(Time& t, Rain& rain);
     
     Time& t;
-    Rain rain;
+    Rain& rain;
      
     
     

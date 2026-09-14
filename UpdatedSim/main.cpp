@@ -15,7 +15,8 @@ int main(int argc, const char * argv[]) {
         run simulation
      */
     Time t;
-    Weather w(t);
+    Rain r(t);
+    Weather w(t, r);
     Simulation s(t, w);
     s.update(19 * 3600, 0);
     return EXIT_SUCCESS;

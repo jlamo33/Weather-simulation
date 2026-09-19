@@ -28,8 +28,6 @@ enum rainStates {
     LIGHT_RAIN,
     HEAVY_RAIN,
     MODERATE_RAIN,
-    DRIZZLE,
-    DOWN_POUR
 };
 
 struct Rain {
@@ -179,17 +177,17 @@ struct Rain {
                 
                 // 40 % chance rain wont lead to heavy rain
                 if(roll < 40) {
-                    heavyRainChance = max(heavyRainChance - 0.6 * deltaTime, 0.0);
+                    heavyRainChance = max(heavyRainChance - 1.6 * deltaTime, 0.0);
                 }
                 
-                // 60% chance rain wont lead to heavy rain
+                // 60% chance rain will increae very slowly to heavy rain
                 else if(roll < 100) {
                     heavyRainChance += 0.001 * deltaTime;
                 }
                 
                 // slight increase for heavy rain at night if raining
                 if(t.isNight()) {
-                    heavyRainChance += 1.1 * deltaTime;
+                    heavyRainChance += 0.9 * deltaTime;
                 }
                 
                 else {
@@ -244,12 +242,20 @@ struct Rain {
                 
                 else {
                     
-                    lightRainChance += 0.1 * deltaTime;
+                    lightRainChance += cos(0.1 * deltaTime) * deltaTime;
                 }
                 
             }
                 
             case THUNDERSTORM: {
+                
+                int roll = dist_rain_struct(gen);
+                
+                //
+                if(roll < 10) {
+                    
+                    lightRainChance += 0.9 * deltaTime;
+                }
                 
                 lightRainChance += 0.2 * deltaTime;
             }
@@ -258,31 +264,28 @@ struct Rain {
         return lightRainChance;
     }
     
-    void determineRainState(double deltaTime) {
-        
-        if(lightRainChance == heavyRainChance) {
-            
-            rainIntensityState = MODERATE_RAIN;
-        }
-        
-        // must have atleast 20% chance for heavy rain
-        if(hasHeavyRainChance(heavyRainChance,  20, deltaTime)) {
-            
-            rainIntensityState = HEAVY_RAIN;
-        }
-        
-        
-        // must have atleast 20% chance light rain
-        else if(hasHeavyRainChance(lightRainChance, 20, deltaTime)) {
-            
-            rainIntensityState = LIGHT_RAIN;
-        }
-        
-    }
     
-    bool hasHeavyRainChance(double rainStateChance, double thresHold, double deltaTime) {
+    rainStates determineRainState() {
+       
+        int roll = dist_rain_struct(gen);
         
-        return  rainStateChance >= (thresHold * deltaTime);
+        cout << "ROLL" << to_string(roll);
+        
+        if(!(roll < heavyRainChance && roll > lightRainChance)) {
+            
+            return rainIntensityState = MODERATE_RAIN;
+        }
+        
+        else if(roll > heavyRainChance && roll < lightRainChance) {
+            
+            return rainIntensityState = LIGHT_RAIN;
+        }
+        
+        else {
+            
+            return HEAVY_RAIN;
+        }
+        
     }
     
     void updateRainFactor(double deltaTime, weatherState currentWeather) {
@@ -298,6 +301,11 @@ struct Rain {
     void updateHeavyRainFactor(double deltaTime, weatherState currentWeather) {
         
         calculateHeavyRainFactor(deltaTime, currentWeather);
+    }
+    
+    void updateRainStates() {
+        
+        determineRainState();
     }
     
     string debugRainFactor() {

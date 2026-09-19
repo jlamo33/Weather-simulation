@@ -73,7 +73,7 @@ void Simulation::update(double timeOfDay, int currentDay) {
       //  weather.rain.updateRainFactor(deltaTime, weather.getCurrentWeather());
         weather.rain.updateHeavyRainFactor(deltaTime, weather.getCurrentWeather());
         weather.rain.updateLightRainFactor(deltaTime, weather.getCurrentWeather());
-        weather.rain.determineRainState(deltaTime);
+        weather.rain.updateRainStates();
         lastTime = currentTime;
         showSim();
         
@@ -95,7 +95,9 @@ void Simulation::showSim() {
     << " | ";
     cout << weather.rain.debugHeavyRainFactor();
     cout << " | ";
-    cout << weather.rain.debugLightRainFactor()
+    cout << weather.rain.debugLightRainFactor();
+    cout << " | ";
+    cout << weather.rain.getRainState()
     << endl;
 }
 
